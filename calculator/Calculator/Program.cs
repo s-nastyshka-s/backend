@@ -1,84 +1,101 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿namespace Calculator;
 
-const string Annotation = "Выберете из списка операцию, которой хотите воспользоваться:\n +    -   Сложение,\n -    -   Вычитание,\n *    -   Умножение,\n /    -   Деление.";
-const string SymbolError = "Ошибка: некорректный ввод операции, выберите из списка.";
-const string EnterNum1 = "Введите первое число (Если число не целое, то дробную часть нужно указать через запятую).";
-const string EnterNum2 = "Введите второе число (Если число не целое, то дробную часть нужно указать через запятую).";
-const string DoubleError = "Введены недопустимые значения, ожидались значения типа Double";
-const string OperationAgain = "Введите R чтобы попробовать снова."; 
-const string OperationNext = "Введите R для ещё одного вычисления.";
-string[] Operations = { "+", "-", "*", "/" };
-
-Restart: //
-Console.WriteLine(Annotation);
-string? Symbol = Console.ReadLine();
-if (!Operations.Contains(Symbol))
+class Program
 {
-    Console.WriteLine(SymbolError);
-    Console.WriteLine(OperationAgain);
-    if (Console.ReadLine() == "R")
+    public static void Main()
     {
-        Console.Clear();
-        goto Restart;
+        while (true)
+        {
+            Console.Clear();
+            ShowMenu();
+
+            int operation;
+            decimal operand1;
+            decimal operand2;
+
+            decimal result;
+            try
+            {
+                operation = Convert.ToInt32(Console.ReadLine());
+
+                if (operation < 1 || operation > 5)
+                {
+                    throw new Exception("Неверный номер операции");
+                }
+
+                Console.WriteLine("Введите первый операнд");
+                operand1 = Convert.ToDecimal(Console.ReadLine());
+
+                Console.WriteLine("Введите второй операнд");
+                operand2 = Convert.ToDecimal(Console.ReadLine());
+
+                result = Calculate(operation, operand1, operand2);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                PressAnyKey();
+                continue;
+            }
+
+            Console.WriteLine("Результат: " + result);
+            PressAnyKey();
+        }
     }
-    else
+
+    private static decimal Addition(decimal operand1, decimal operand2)
     {
-        System.Environment.Exit(1);
+        return operand1 + operand2;
     }
-};
 
-Console.WriteLine(EnterNum1);
-string? Num1 = Console.ReadLine();
-
-Console.WriteLine(EnterNum2);
-string? Num2 = Console.ReadLine();
-
-Regex regex = new Regex(@"^(-{0,1}\d{1,}\,{0,1}\d*)$");
-if (!regex.IsMatch(Num1) || !regex.IsMatch(Num2))
-{
-    Console.WriteLine(DoubleError);
-    Console.WriteLine(OperationAgain);
-    if (Console.ReadLine() == "R")
+    private static decimal Subtraction(decimal operand1, decimal operand2)
     {
-        Console.Clear();
-        goto Restart;
+        return operand1 - operand2;
     }
-    else
+
+    private static decimal Multiplication(decimal operand1, decimal operand2)
     {
-        System.Environment.Exit(1);
+        return operand1 * operand2;
     }
-}
 
-double Double2 = double.Parse(Num2);
-double Double1 = double.Parse(Num1);
+    private static decimal Division(decimal operand1, decimal operand2)
+    {
+        if (operand2 == 0)
+        {
+            throw new DivideByZeroException();
+        }
+        return operand1 / operand2;
+    }
 
-double result = 0;
-if (Symbol == "+")
-{
-    result = Double1 + Double2;
-}
+    private static void PressAnyKey()
+    {
+        Console.WriteLine("\nНажмите любую клавишу для продолжения...");
+        Console.ReadKey();
+    }
 
-if (Symbol == "-")
-{
-    result = Double1 - Double2;
-}
+    private static void ShowMenu()
+    {
+        Console.WriteLine("Выберите операцию:");
+        Console.WriteLine("1. Сложение");
+        Console.WriteLine("2. Вычитание");
+        Console.WriteLine("3. Умножение");
+        Console.WriteLine("4. Деление");
+    }
 
-if (Symbol == "*")
-{
-    result = Double1 * Double2;
-}
-
-if (Symbol == "/")
-{
-    result = Double1 / Double2;
-}
-
-
-Console.WriteLine("Результат: " + Double1 + Symbol + Double2 + "=" + result);
-Console.WriteLine(OperationNext);
-if (Console.ReadLine() == "R")
-{
-    Console.Clear();
-    goto Restart;
+    private static decimal Calculate(int operation, decimal operand1, decimal operand2)
+    {
+        switch (operation)
+        {
+            case 1:
+                return Addition(operand1, operand2);
+            case 2:
+                return Subtraction(operand1, operand2);
+            case 3:
+                return Multiplication(operand1, operand2);
+            case 4:
+                return Division(operand1, operand2);
+            default:
+                throw new Exception("Неверный номер операции");
+        }
+    }
 }
