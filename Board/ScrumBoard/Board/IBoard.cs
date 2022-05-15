@@ -1,0 +1,30 @@
+﻿using ScrumBoard.Column;
+using ScrumBoard.Task;
+
+namespace ScrumBoard.Board
+{
+    public interface IBoard
+    {
+        public string Name { get; set; }
+
+        public void AddColumn(IColumn column);
+
+        public void EditColumnName(string GUID, string name);
+
+        public void AddTask(ITask task, int columnNum = 0);
+
+        public ITask GetTask(string GUID);
+
+        public IColumn GetColumn(string GUID);
+
+        public List<IColumn> GetAllColumn();
+
+        public void EditTask(string GUID, string name, string description);
+
+        public void DeleteTask(string GUID);
+
+        public void DeleteColumn(string GUID);
+
+        public void TaskTransfer(string finalColumnGUID, string taskGUID);
+    }
+}
