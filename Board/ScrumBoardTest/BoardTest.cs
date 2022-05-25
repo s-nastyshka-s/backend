@@ -272,7 +272,7 @@ namespace ScrumBoardTest
             board.AddColumn(column2);
             board.AddTask(task);
             //действие
-            board.TaskTransfer(column2.GUID, task.GUID);
+            board.TransferTask(column2.GUID, task.GUID);
             //проверка
             Assert.Empty(board.GetColumn(column1.GUID).GetAllTask());
             Assert.Equal(task, board.GetColumn(column2.GUID).GetTask(task.GUID));
